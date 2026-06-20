@@ -517,6 +517,9 @@ bool VL6180_7Semi::getDistance(uint8_t &distance, uint8_t &rangeStatus)
     if (!bus)
         return false;
 
+    // Clear range interrupt flag
+    clearRangeInterrupt();
+
     // Start single-shot ranging measurement
     if (!bus->write(VL6180_REG_SYSRANGE_START, (uint8_t)0x01))
         return false;
@@ -531,9 +534,6 @@ bool VL6180_7Semi::getDistance(uint8_t &distance, uint8_t &rangeStatus)
     // Read range status register
     if (!getRangeStatus(rangeStatus))
         return false;
-
-    // Clear range interrupt flag
-    // clearRangeInterrupt();
 
     // Extract error status bits
     rangeStatus = (rangeStatus >> 4) & 0x0F;
